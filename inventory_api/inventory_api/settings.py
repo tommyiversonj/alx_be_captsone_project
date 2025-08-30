@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
     'django_filters',
+    'drf_spectacular',
     'users',
     'inventory',
     'purchases',
@@ -169,7 +170,15 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+# Base URL for API
+API_BASE_URL = 'http://127.0.0.1:8000/api/'
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+
 from datetime import timedelta
+
+AUTH_USER_MODEL = 'users.User'
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),

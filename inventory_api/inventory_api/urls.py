@@ -16,8 +16,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+@api_view(['Get'])
+def api_root(request, format=None):
+    return Response({
+        'inventory': f"{settings.API_BASE_URL}inventory/",
+        'users': f"{settings.API_BASE_URL}users/",
+        'purchases': f"{settings.API_BASE_URL}purchases/",
+        'stock': f"{settings.API_BASE_URL}stock/",
+        'sales': f"{settings.API_BASE_URL}sales/",
+        'schema': f"{settings.API_BASE_URL}schema/",
+        'swagger-ui': f"{settings.API_BASE_URL}swagger-ui/",
+    })
 
 urlpatterns = [
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('', api_root),
     path('admin/', admin.site.urls),
-     path('api/', include('apps.inventory.urls')), 
+    path('api/inventory/', include('inventory.urls')), 
+    path('api/users/', include('users.urls')),
+    path('api/purchases/', include('purchases.urls')),
+    path('api/stock/', include('stock.urls')),
+    path('api/sales/', include('sales.urls')),
 ]
