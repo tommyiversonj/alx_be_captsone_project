@@ -4,9 +4,8 @@ from django.db.models import Q
 
 # Create your models here.
 class Category(models.Model):
-    """
-    Represents a category for grouping and organizing products.
-    """
+    
+    # Represents a category for grouping and organizing products.
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
 
@@ -14,9 +13,8 @@ class Category(models.Model):
         return self.name
 
 class Product(models.Model):
-    """
-    Represents an individual item in the inventory.
-    """
+
+    # Represents an individual item in the inventory.
     name = models.CharField(max_length=150)
     category = models.ForeignKey(
         Category,
@@ -31,6 +29,8 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        # Define the database-level constraints and indexes for the product model.
+        
         # Enforces data integrity at the database level
         constraints = [
             models.CheckConstraint(
@@ -51,3 +51,12 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.category.name})"
+    
+class Supplier(models.Model):
+        
+    name = models.CharField(max_length=255, unique=True)
+    contact_info = models.CharField(max_length=255, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.name
