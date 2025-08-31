@@ -5,6 +5,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate
 from django.db import IntegrityError
+from rest_framework.authtoken.views import ObtainAuthToken
 
 from .models import User
 from .serializers import UserSerializer, UserRegistrationSerializer, AuthTokenSerializer
@@ -47,15 +48,15 @@ def login_user(request):
     # Authenticates a user and returns a token.
     serializer = AuthTokenSerializer(data=request.data)
     if serializer.is_valid():
-        user = authenticate(
+            user = authenticate(
             username=serializer.validated_data['username'],
             password=serializer.validated_data['password']
         )
-        if user:
-            token, _ = Token.objects.get_or_create(user=user)
+            if user:
+                token, _ = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
-        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -66,3 +67,16 @@ def logout_user(request):
         return Response(status=status.HTTP_200_OK)
     except AttributeError:
         return Response({"detail": "No token found for this user."}, status=status.HTTP_400_BAD_REQUEST)
+    
+class CustomAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+        'token': token.key,
+        'user_id': user.pk,
+        'email': user.email
+})
