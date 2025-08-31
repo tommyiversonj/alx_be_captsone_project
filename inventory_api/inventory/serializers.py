@@ -2,10 +2,15 @@ from rest_framework import serializers
 from .models import Category, Product
 
 class CategorySerializer(serializers.ModelSerializer):
-
+    
     class Meta:
         model = Category
         fields = ['id', 'name', 'description']
+        
+class CategoryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['name', 'description']
 
 class ProductSerializer(serializers.ModelSerializer):
     
@@ -29,5 +34,27 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def validate_price(self, value):
         if value < 0:
-            raise serializers.ValidationError("Price must be a non-negative value.")
+            raise serializers.ValidationError({"price": "Price must be a non-negative value."})
+        return value
+    
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        required=False
+    )
+    
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'quantity_in_stock', 'category']
+        extra_kwargs = {
+            'name': {'required': False},
+            'description': {'required': False},
+            'price': {'required': False},
+            'quantity_in_stock': {'required': False},
+        }
+
+        
+def validate_price(self, value):
+        if value < 0:
+            raise serializers.ValidationError({"price": "Price must be a non-negative value."})
         return value
