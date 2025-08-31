@@ -2,7 +2,7 @@
 # Inventory & Sales Management System
 
 ## Project Overview
-This project is a robust Inventory & Sales Management System built with Django and Django REST Framework (DRF). It manages products, categories, suppliers, purchases, sales, stock movements, and users with role-based access.
+This project provides a comprehensive Inventory and Sales Management System designed for small to medium-sized businesses. It helps track products, manage stock levels, and monitor sales in real time, all through a secure, RESTful API.
 
 ## Project Structure
 ```
@@ -110,12 +110,59 @@ sales/
 - `/api/dashboard/total-sales/` GET (planned)
 - `/api/dashboard/top-products/` GET (planned)
 
-## Development & Setup Instructions
-1. Clone repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run migrations: `python manage.py migrate`
-4. Create superuser: `python manage.py createsuperuser`
-5. Start server: `python manage.py runserver`
+### Development & Setup Instructions
+
+To get the project up and running on your local machine, follow these steps:
+
+1.  **Clone the Repository**
+    ```bash
+    git clone [https://github.com/tommyiversonj/alx_be_captsone_project.git](https://github.com/tommyiversonj/alx_be_captsone_project.git)
+    cd alx_be_captsone_project
+    ```
+2.  **Create a Virtual Environment & Install Dependencies**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install -r requirements.txt
+    ```
+3.  **Configure Environment Variables**
+    Create a file named `.env` in the root of the project with the following content. **Remember to replace the values with your actual database credentials.**
+
+    ```ini
+    SECRET_KEY=your-secret-key
+    DEBUG=True
+
+    DB_NAME=your-database-name
+    DB_USER=your-database-user
+    DB_PASSWORD=your-database-password
+    DB_HOST=localhost
+    DB_PORT=5432
+    ```
+4.  **Set Up the Database**
+    Make sure your PostgreSQL server is running. Create a new database with the name you specified in the `.env` file. Then, apply migrations to set up the database schema.
+    ```bash
+    python3 manage.py migrate
+    ```
+5.  **Create a Superuser**
+    This will allow you to access the Django admin and test all features.
+    ```bash
+    python3 manage.py createsuperuser
+    ```
+6.  **Start the Server**
+    ```bash
+    python3 manage.py runserver
+    ```
+
+    ### API Usage
+
+To interact with the API, you must first authenticate to obtain an access token. All protected endpoints require this token to be included in the `Authorization` header.
+
+**1. Log in to get a token:**
+
+```bash
+curl -X POST [http://127.0.0.1:8000/api/users/login/](http://127.0.0.1:8000/api/users/login/) \
+-H "Content-Type: application/json" \
+-d '{"username": "your-username", "password": "your-password"}'
 
 ## Testing & Linting
 - Lint code with `flake8` or format with `black`
