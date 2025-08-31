@@ -21,7 +21,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-@api_view(['Get'])
+@api_view(['GET'])
 def api_root(request, format=None):
     return Response({
         'inventory': f"{settings.API_BASE_URL}inventory/",
@@ -43,4 +43,5 @@ urlpatterns = [
     path('api/purchases/', include('purchases.urls')),
     path('api/stock/', include('stock.urls')),
     path('api/sales/', include('sales.urls')),
+    path('api/register/', include('users.urls')),
 ]

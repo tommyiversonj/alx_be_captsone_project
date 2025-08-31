@@ -69,6 +69,7 @@ def logout_user(request):
         return Response({"detail": "No token found for this user."}, status=status.HTTP_400_BAD_REQUEST)
     
 class CustomAuthToken(ObtainAuthToken):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         
