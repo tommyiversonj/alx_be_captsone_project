@@ -12,12 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 import sys
+import environ
 from pathlib import Path
 
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
@@ -27,6 +33,8 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+
+DEBUG = env('DEBUG')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
@@ -49,13 +57,12 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'drf_spectacular',
+    'pytest',
     'users',
     'inventory',
     'purchases',
     'sales',
     'stock',
-    
-    
     
     ]
 
@@ -89,6 +96,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inventory_api.wsgi.application'
 
+# Pytest configuration
+pytest_plugins = [
+    'inventory.tests',
+    'purchases.tests',
+    'sales.tests',
+    'stock.tests',
+    'users.tests'
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
