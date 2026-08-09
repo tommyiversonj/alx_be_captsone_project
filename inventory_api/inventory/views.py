@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions, filters, status
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
-from django.db import IntegrityError, models, transaction
+from django.db import models, transaction
 
 from .models import Category, Product
 from .serializers import (
@@ -52,15 +52,6 @@ class ProductViewSet(viewsets.ModelViewSet):
             return ProductUpdateSerializer
         return self.serializer_class
     
-    def create(self, request, *args, **kwargs):
-        try:
-            return super().create(request, *args, **kwargs)
-        except IntegrityError as e:
-            return Response(
-            {"error": "IntegrityError", "message": str(e)},
-                status==status.HTTP_400_BAD_REQUEST
-            )
-            
     def destroy(self, request, *args, **kwargs):
         if not request.user.is_superuser:
                 return Response(

@@ -68,6 +68,8 @@ class PurchaseCreateTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Purchase.objects.count(), 0)
+        # Previously a bare list instead of the standardized {"detail": "..."} shape.
+        self.assertIn('detail', response.data)
 
     def test_total_amount_sums_items(self):
         data = {
