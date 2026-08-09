@@ -17,12 +17,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from users.views import register_user, CustomAuthToken
 
+@extend_schema(
+    responses=OpenApiResponse(description="A map of top-level API section names to their URLs."),
+)
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
@@ -31,6 +35,7 @@ def api_root(request, format=None):
         'purchases': f"{settings.API_BASE_URL}purchases/",
         'stock': f"{settings.API_BASE_URL}stock/",
         'sales': f"{settings.API_BASE_URL}sales/",
+        'dashboard': f"{settings.API_BASE_URL}dashboard/",
         'schema': f"{settings.API_BASE_URL}schema/",
         'swagger-ui': f"{settings.API_BASE_URL}swagger-ui/",
     })
@@ -45,6 +50,7 @@ urlpatterns = [
     path('api/purchases/', include('purchases.urls')),
     path('api/stock/', include('stock.urls')),
     path('api/sales/', include('sales.urls')),
+    path('api/dashboard/', include('dashboard.urls')),
     path('api/register/', register_user, name='register'),
     path('api/login/', CustomAuthToken.as_view(), name='login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

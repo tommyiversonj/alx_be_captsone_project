@@ -25,3 +25,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+class RegisterResponseSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    message = serializers.CharField()
+
+class AuthTokenResponseSerializer(serializers.Serializer):
+    token = serializers.CharField()
+    user_id = serializers.IntegerField()
+    email = serializers.EmailField()

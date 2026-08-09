@@ -47,3 +47,39 @@ class ExceptionHandlerTest(SimpleTestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.data, {"detail": "Not found."})
+
+
+class OpenAPISchemaTest(SimpleTestCase):
+    """
+    Generates the real OpenAPI schema the same way `manage.py spectacular
+    --fail-on-warn --validate` does, so schema drift (a view drf-spectacular
+    can't introspect, an endpoint missing from the schema entirely) is
+    caught by the test suite instead of only being discoverable by manually
+    running the management command.
+    """
+
+    def test_schema_generates_without_warnings_and_is_structurally_valid(self):
+        from drf_spectacular.drainage import GENERATOR_STATS
+        from drf_spectacular.generators import SchemaGenerator
+        from drf_spectacular.validation import validate_schema
+
+        GENERATOR_STATS.reset()
+        schema = SchemaGenerator().get_schema(request=None, public=True)
+
+        self.assertFalse(
+            bool(GENERATOR_STATS),
+            "Schema generation produced warnings/errors - run "
+            "`manage.py spectacular --fail-on-warn` locally to see them.",
+        )
+        validate_schema(schema)  # raises if the schema isn't valid OpenAPI 3
+
+    def test_schema_includes_the_dashboard_endpoints(self):
+        from drf_spectacular.generators import SchemaGenerator
+
+        schema = SchemaGenerator().get_schema(request=None, public=True)
+        for path in (
+            '/api/dashboard/low-stock/',
+            '/api/dashboard/total-sales/',
+            '/api/dashboard/top-products/',
+        ):
+            self.assertIn(path, schema['paths'])

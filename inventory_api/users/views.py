@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
@@ -7,7 +8,12 @@ from django.db import IntegrityError
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from .models import User
-from .serializers import UserSerializer, UserRegistrationSerializer
+from .serializers import (
+    AuthTokenResponseSerializer,
+    RegisterResponseSerializer,
+    UserRegistrationSerializer,
+    UserSerializer,
+)
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -19,6 +25,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # --- Function-based authentication views ---
 
+@extend_schema(
+    request=UserRegistrationSerializer,
+    responses={
+        201: RegisterResponseSerializer,
+        400: OpenApiResponse(description="Validation error or username/email already taken."),
+    },
+)
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register_user(request):
@@ -40,6 +53,13 @@ def register_user(request):
             )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@extend_schema(
+    request=None,
+    responses={
+        200: OpenApiResponse(description="Logged out successfully."),
+        400: OpenApiResponse(description="No token found for this user."),
+    },
+)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def logout_user(request):
@@ -52,6 +72,8 @@ def logout_user(request):
     
 class CustomAuthToken(ObtainAuthToken):
     permission_classes = [AllowAny]
+
+    @extend_schema(responses={200: AuthTokenResponseSerializer})
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data, context={'request': request})
         
