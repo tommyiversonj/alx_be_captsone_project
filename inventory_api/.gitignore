@@ -16,11 +16,14 @@ build/
 
 # Env and secrets
 .env
-.ini
+*.ini
 
 # Django stuff
 /staticfiles/
 /media/
+
+# Virtual environment
+venv/
 
 # IDEs
 .vscode/

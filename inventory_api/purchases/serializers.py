@@ -25,7 +25,7 @@ class PurchaseCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Purchase
-        fields = ['supplier', 'items']
+        fields = ['id', 'supplier', 'items']
     
     def create(self, validated_data):
         items_data = validated_data.pop('items')

@@ -3,12 +3,11 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth import authenticate
 from django.db import IntegrityError
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from .models import User
-from .serializers import UserSerializer, UserRegistrationSerializer, AuthTokenSerializer
+from .serializers import UserSerializer, UserRegistrationSerializer
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -40,23 +39,6 @@ def register_user(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def login_user(request):
-    
-    # Authenticates a user and returns a token.
-    serializer = AuthTokenSerializer(data=request.data)
-    if serializer.is_valid():
-            user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password']
-        )
-            if user:
-                token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-            return Response({'detail': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])

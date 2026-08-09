@@ -57,7 +57,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'drf_spectacular',
-    'pytest',
     'users',
     'inventory',
     'purchases',
@@ -96,24 +95,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'inventory_api.wsgi.application'
 
-# Pytest configuration
-pytest_plugins = [
-    'inventory.tests',
-    'purchases.tests',
-    'sales.tests',
-    'stock.tests',
-    'users.tests'
-]
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 DATABASES = {
     'default': {
@@ -185,6 +168,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
 
@@ -220,7 +204,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': 'inventory.log',
+            'filename': os.path.join(BASE_DIR, 'inventory.log'),
         },
         'console': {
             'class': 'logging.StreamHandler',

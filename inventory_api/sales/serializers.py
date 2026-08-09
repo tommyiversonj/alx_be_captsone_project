@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from rest_framework import serializers
 from django.db import transaction, models
 from inventory.models import Product
@@ -25,20 +27,21 @@ class SaleCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sale
-        fields = ['customer_name', 'items']
+        fields = ['id', 'customer_name', 'items']
     
     def create(self, validated_data):
         items_data = validated_data.pop('items')
         
         if not items_data:
             raise serializers.ValidationError("A sale must have at least one item.")
-        
+
+        quantities_by_product = defaultdict(int)
+        for item_data in items_data:
+            quantities_by_product[item_data['product']] += item_data['quantity']
+
         with transaction.atomic():
-            for item_data in items_data:
-                product = item_data['product']
-                quantity = item_data['quantity']
-                
-                if product.quantity_in_stock < quantity:
+            for product, total_quantity in quantities_by_product.items():
+                if product.quantity_in_stock < total_quantity:
                     raise serializers.ValidationError(
                         f"Insufficient stock for product '{product.name}'. "
                         f"Only {product.quantity_in_stock} available."

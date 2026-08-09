@@ -25,9 +25,3 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
-
-class AuthTokenSerializer(serializers.Serializer):
-    
-# Serializer for user login and token generation.
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)

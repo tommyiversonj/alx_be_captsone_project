@@ -20,8 +20,8 @@ from django.conf import settings
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from users.views import register_user, CustomAuthToken
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -45,7 +45,8 @@ urlpatterns = [
     path('api/purchases/', include('purchases.urls')),
     path('api/stock/', include('stock.urls')),
     path('api/sales/', include('sales.urls')),
-    path('api/register/', include('users.urls')),
+    path('api/register/', register_user, name='register'),
+    path('api/login/', CustomAuthToken.as_view(), name='login'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

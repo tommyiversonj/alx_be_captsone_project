@@ -34,7 +34,7 @@ class Product(models.Model):
         # Enforces data integrity at the database level
         constraints = [
             models.CheckConstraint(
-                check=Q(quantity_in_stock__gte=0),
+                condition=Q(quantity_in_stock__gte=0),
                 name="product_quantity_nonnegative"
             ),
             models.UniqueConstraint(
