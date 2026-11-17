@@ -1,0 +1,70 @@
+.navbar {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+}
+
+.navbar button {
+  margin-left: auto;
+}
+
+.page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  text-align: left;
+}
+
+.page-narrow {
+  max-width: 360px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.sale-item-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.row-low-stock {
+  background-color: #fff3cd;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.success {
+  color: #15803d;
+}
